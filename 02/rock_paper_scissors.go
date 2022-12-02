@@ -35,9 +35,42 @@ func usagePoints(a string) (int, error) {
 	}
 }
 
+func whatToDo(a, b string) (string, error) {
+	if b == "X" {
+		// Need to lose
+		if a == "A" {
+			return "Z", nil
+		} else if a == "B" {
+			return "X", nil
+		} else if a == "C" {
+			return "Y", nil
+		}
+	} else if b == "Y" {
+		// Need to draw
+		if a == "A" {
+			return "X", nil
+		} else if a == "B" {
+			return "Y", nil
+		} else if a == "C" {
+			return "Z", nil
+		}
+	} else if b == "Z" {
+		// Need to win
+		if a == "A" {
+			return "Y", nil
+		} else if a == "B" {
+			return "Z", nil
+		} else if a == "C" {
+			return "X", nil
+		}
+	}
+	return "", errors.New(fmt.Sprintf("Unkown chars: %s, %s", a, b))
+}
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	totalScore := 0
+	totalScore2 := 0
 	for scanner.Scan() {
 		err := scanner.Err()
 		if err == io.EOF {
@@ -56,6 +89,17 @@ func main() {
 		}
 		totalScore += winPoints(a, b) + up
 		fmt.Printf("%s: %d + %d\n", value, winPoints(a, b), up)
+
+		b, err = whatToDo(a, b)
+		if err != nil {
+			panic(err)
+		}
+		up, err = usagePoints(b)
+		if err != nil {
+			panic(err)
+		}
+		totalScore2 += winPoints(a, b) + up
 	}
 	fmt.Printf("%d\n", totalScore)
+	fmt.Printf("%d\n", totalScore2)
 }
