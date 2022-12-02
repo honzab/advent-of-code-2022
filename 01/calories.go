@@ -5,6 +5,7 @@ import "fmt"
 import "os"
 import "io"
 import "strconv"
+import "sort"
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
@@ -17,7 +18,6 @@ func main() {
 			return
 		}
 		value := scanner.Text()
-		fmt.Printf("%r\n", value)
 		if value == "" {
 			index = index + 1
 			continue
@@ -29,13 +29,9 @@ func main() {
 		elfs[index] += ii
 	}
 
-	max_value := uint64(0)
-	max_index := 0
-	for i := range elfs {
-		if elfs[i] >= max_value {
-			max_index = i
-			max_value = elfs[i]
-		}
-	}
-	fmt.Printf("%d elf carrying %d\n", max_index+1, max_value)
+	sort.Slice(elfs, func(i, j int) bool {
+		return elfs[i] > elfs[j]
+	})
+	fmt.Printf("%d\n", elfs[0])
+	fmt.Printf("%d\n", elfs[0]+elfs[1]+elfs[2])
 }
