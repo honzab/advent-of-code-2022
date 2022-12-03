@@ -41,17 +41,34 @@ func gimmePrio(r rune) int {
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	prioSum := 0
+	badgeSum := 0
+	group := make([]string, 0, 3)
+	line := 0
 	for scanner.Scan() {
 		err := scanner.Err()
 		if err == io.EOF {
 			return
 		}
 		value := scanner.Text()
+		line += 1
 		if len(value)%2 != 0 {
 			panic(errors.New("Compartments not the same size"))
 		}
 		if value == "" {
 			continue
+		}
+		group = append(group, value)
+		if line == 3 {
+			line = 0
+			if len(group) != 3 {
+				panic(errors.New(fmt.Sprintf("You did something wrong: %d", len(group))))
+			}
+			sh2 := sharedRunes(string(sharedRunes(group[0], group[1])), group[2])
+			if len(sh2) != 1 {
+				panic(errors.New(fmt.Sprintf("Group is invalid, shared badges: %d", len(sh2))))
+			}
+			badgeSum += gimmePrio(sh2[0])
+			group = make([]string, 0, 3)
 		}
 		firstHalf := value[0 : len(value)/2]
 		secondHalf := value[len(value)/2 : len(value)]
@@ -62,4 +79,5 @@ func main() {
 		}
 	}
 	fmt.Printf("%d\n", prioSum)
+	fmt.Printf("%d\n", badgeSum)
 }
