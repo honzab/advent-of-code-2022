@@ -24,9 +24,22 @@ func isInRangeBothWays(r1, r2 []string) bool {
 	return false
 }
 
+func overlapAtAll(r1, r2 []string) bool {
+	b11, _ := strconv.ParseInt(r1[0], 10, 64)
+	b12, _ := strconv.ParseInt(r1[1], 10, 64)
+	b21, _ := strconv.ParseInt(r2[0], 10, 64)
+	b22, _ := strconv.ParseInt(r2[1], 10, 64)
+
+	if (b12 < b21) || (b22 < b11) {
+		return false
+	}
+	return true
+}
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	counter := 0
+	overlapCounter := 0
 	for scanner.Scan() {
 		err := scanner.Err()
 		if err == io.EOF {
@@ -52,6 +65,11 @@ func main() {
 			counter += 1
 			fmt.Printf("Match: %s\n", value)
 		}
+		if overlapAtAll(range1, range2) {
+			overlapCounter += 1
+			fmt.Printf("Overlap: %s\n", value)
+		}
 	}
 	fmt.Printf("%d\n", counter)
+	fmt.Printf("%d\n", overlapCounter)
 }
